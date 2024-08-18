@@ -1,6 +1,7 @@
 import { App, FileManager, MarkdownView, Plugin, TFile } from 'obsidian';
 import { ScrambleSettingTab } from "./settings";
-import { rolling_shuffle, shuffle, shuffle_overshoot } from './shuffling';
+import { rolling_shuffle, shuffle, shuffle_keysmash, shuffle_with_easing } from './shuffling';
+import { easeOutBack } from './easing';
 
 export interface ScramblePluginSettings {
     cssclass: string,
@@ -43,7 +44,7 @@ export default class ScrambleTextPlugin extends Plugin {
             // console.log(view);
 
             if (this.settings.cssclass == "") { 
-                rolling_shuffle(view, view.inlineTitleEl.textContent, this.settings);
+                shuffle_with_easing(view, view.inlineTitleEl.textContent, this.settings, easeOutBack);
                 return;
             }
 
@@ -53,7 +54,7 @@ export default class ScrambleTextPlugin extends Plugin {
                 this.app.fileManager.processFrontMatter(file,  (frontmatter: any) => {
                     if (frontmatter.cssclasses && frontmatter.cssclasses.includes(cssclass)) {
                         console.log("Found " + cssclass);
-                        rolling_shuffle(view, view.inlineTitleEl.textContent, this.settings);
+                        shuffle_with_easing(view, view.inlineTitleEl.textContent, this.settings, easeOutBack);
                         return;
                     }
                 });

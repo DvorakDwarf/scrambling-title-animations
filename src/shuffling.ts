@@ -132,7 +132,7 @@ export async function shuffle(
 }
 
 //Doesn't work if n_frames lower than og_title.length
-export async function shuffle_overshoot(
+export async function shuffle_keysmash(
     view: MarkdownView, 
     og_title: string, 
     settings: ScramblePluginSettings
@@ -173,7 +173,7 @@ export async function rolling_shuffle(
 
     const scramble_buffer = 7;
     n_frames += scramble_buffer;
-    
+
     const delta = settings.length / n_frames;
 
     //Look into
@@ -198,4 +198,40 @@ export async function rolling_shuffle(
 
         await setTimeout(delta);
     }
+}
+
+//TODO:
+//Doesn't work if n_frames lower than og_title.length
+export async function shuffle_with_easing(
+    view: MarkdownView, 
+    og_title: string, 
+    settings: ScramblePluginSettings,
+    easing_function: CallableFunction
+): Promise<void> {    
+    let titleEl = view.inlineTitleEl;
+    //How long between each frame in ms
+    const delta = 1000 / settings.fps;
+    let n_frames = settings.length / delta;
+
+    //Look into
+    titleEl.style.pointerEvents = "none";
+
+    //I want my for i in range :(((
+    for (let frame = 0; frame < n_frames; frame++) {
+        if (og_title != view.file?.basename) {
+            console.log("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
+            return;
+        }
+
+        console.log("Frame " + frame);
+
+        let easing_coefficient = easing_function((frame+1)/n_frames)
+        let garble_length = easing_coefficient * og_title.length;
+        console.log(easing_coefficient);
+        titleEl.setText(get_garbled_string(garble_length));
+
+        await setTimeout(delta);
+    }
+        
+    finish(titleEl, og_title, view, delta);
 }

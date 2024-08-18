@@ -28,12 +28,34 @@ function get_garbled_string(length: number): string {
     return answer
 }
 
+async function pick_finish(
+    settings: ScramblePluginSettings,
+    titleEl: HTMLElement, 
+    og_title: string, 
+    view: MarkdownView, 
+    delta: number
+) {
+    let available_function = [];
+
+    if (settings.error_finish == true) {
+        available_function.push(finish_with_errors);
+    }
+
+    if (settings.regular_finish == true || available_function.length == 0) {
+        available_function.push(finish);
+    }
+
+    let picked_function = available_function[Math.floor(Math.random() * available_function.length)];
+    await picked_function(titleEl, og_title, view, delta);
+}
 async function finish(
     titleEl: HTMLElement, 
     og_title: string, 
     view: MarkdownView, 
     delta: number
 ) {
+    console.log("REGULAR FINISH");
+
     let current_text = titleEl.textContent?.split("") as string[];
     
     for (let frame = 0; frame < og_title.length; frame++) {
@@ -76,6 +98,8 @@ async function finish_with_errors(
     view: MarkdownView, 
     delta: number
 ) {
+    console.log("FINISH WITH ERRORS");
+
     let current_text = titleEl.textContent?.split("") as string[];
     
     for (let frame = 0; frame < og_title.length; frame++) {
@@ -106,6 +130,8 @@ export async function shuffle(
     og_title: string, 
     settings: ScramblePluginSettings
 ): Promise<void> {    
+    console.log("REGULAR SHUFFLE");
+
     let titleEl = view.inlineTitleEl;
     //How long between each frame in ms
     const delta = 1000 / settings.fps;
@@ -128,7 +154,7 @@ export async function shuffle(
         await setTimeout(delta);
     }
         
-    finish(titleEl, og_title, view, delta);
+    pick_finish(settings, titleEl, og_title, view, delta);
 }
 
 //Doesn't work if n_frames lower than og_title.length
@@ -137,6 +163,8 @@ export async function shuffle_keysmash(
     og_title: string, 
     settings: ScramblePluginSettings
 ): Promise<void> {    
+    console.log("KEYSMASH SHUFFLE");
+
     let titleEl = view.inlineTitleEl;
     //How long between each frame in ms
     const delta = 1000 / settings.fps;
@@ -157,7 +185,7 @@ export async function shuffle_keysmash(
         await setTimeout(delta);
     }
         
-    finish_with_errors(titleEl, og_title, view, delta);
+    pick_finish(settings, titleEl, og_title, view, delta);
 }
 
 //TODO:
@@ -167,6 +195,8 @@ export async function rolling_shuffle(
     og_title: string, 
     settings: ScramblePluginSettings
 ): Promise<void> {    
+    console.log("ROLLING SHUFFLE");
+
     let titleEl = view.inlineTitleEl;
     //How long between each frame in ms
     let n_frames = og_title.length;
@@ -208,6 +238,8 @@ export async function shuffle_with_easing(
     settings: ScramblePluginSettings,
     easing_function: CallableFunction
 ): Promise<void> {    
+    console.log("SHUFFLE WITH EASING");
+
     let titleEl = view.inlineTitleEl;
     //How long between each frame in ms
     const delta = 1000 / settings.fps;
@@ -233,5 +265,5 @@ export async function shuffle_with_easing(
         await setTimeout(delta);
     }
         
-    finish(titleEl, og_title, view, delta);
+    pick_finish(settings, titleEl, og_title, view, delta);
 }

@@ -28,6 +28,35 @@ const DEFAULT_SETTINGS: Partial<ScramblePluginSettings> = {
     error_finish: true
 };
 
+async function pick_shuffle(
+    view: MarkdownView, 
+    og_title: string, 
+    settings: ScramblePluginSettings,
+    easing_function: CallableFunction
+): Promise<void> {
+
+    let available_function = [];
+
+    if (settings.keyboard_shuffle == true) {
+        available_function.push(shuffle_keysmash);
+    }
+
+    if (settings.rolling_shuffle == true) {
+        available_function.push(rolling_shuffle);
+    }
+
+    if (settings.overshoot_shuffle == true) {
+        available_function.push(shuffle_with_easing);
+    }
+
+    if (settings.regular_shuffle == true || available_function.length == 0) {
+        available_function.push(shuffle);
+    }
+
+    let picked_function = available_function[Math.floor(Math.random() * available_function.length)];
+    await picked_function(view, og_title, settings, easing_function);
+}
+
 export default class ScrambleTextPlugin extends Plugin {
 	settings: ScramblePluginSettings;
     
@@ -55,7 +84,7 @@ export default class ScrambleTextPlugin extends Plugin {
             // console.log(view);
 
             if (this.settings.cssclass == "") { 
-                shuffle_with_easing(view, view.inlineTitleEl.textContent, this.settings, easeOutBack);
+                pick_shuffle(view, view.inlineTitleEl.textContent, this.settings, easeOutBack);
                 return;
             }
 
@@ -65,7 +94,7 @@ export default class ScrambleTextPlugin extends Plugin {
                 this.app.fileManager.processFrontMatter(file,  (frontmatter: any) => {
                     if (frontmatter.cssclasses && frontmatter.cssclasses.includes(cssclass)) {
                         console.log("Found " + cssclass);
-                        shuffle_with_easing(view, view.inlineTitleEl.textContent, this.settings, easeOutBack);
+                        pick_shuffle(view, view.inlineTitleEl.textContent, this.settings, easeOutBack);
                         return;
                     }
                 });

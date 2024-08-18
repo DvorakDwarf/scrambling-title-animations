@@ -7,14 +7,25 @@ export interface ScramblePluginSettings {
     cssclass: string,
     fps: number,
     length: number,
-    verbose: boolean
+    regular_shuffle: boolean,
+    keyboard_shuffle: boolean,
+    rolling_shuffle: boolean,
+    overshoot_shuffle: boolean,
+    regular_finish: boolean,
+    error_finish: boolean,
+
 }
   
 const DEFAULT_SETTINGS: Partial<ScramblePluginSettings> = {
     cssclass: "",
     fps: 30,
     length: 2000,
-    verbose: false
+    regular_shuffle: true,
+    keyboard_shuffle: true,
+    rolling_shuffle: true,
+    overshoot_shuffle: true,
+    regular_finish: true,
+    error_finish: true
 };
 
 export default class ScrambleTextPlugin extends Plugin {

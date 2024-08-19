@@ -1,7 +1,16 @@
 # Scrambling Title Animations
 This was originally cloned from the Obsidian Sample Plugin repo which is why you see all the other contributors
 
-Obsidian (https://obsidian.md).
+(Put plugin gif here)
+
+This is a plugin for [Obsidian](https://obsidian.md) that animates the title of any new note you open by scrambling it in several visually appealing ways. \
+I noticed this effect in a couple of places and I personally find it wonderful. Last push was when I recently finished watching Aldnoah.Zero and then visited their website https://www.aldnoahzerousa.com/. IT'S SO PRETTY, I LOVE THE LOGIN SCREEN AND THE SCRAMBLING EFFECT ON THE TEXT, MWAH, CHEF'S KISS. I was thinking of eventually putting the effect somewhere on my personal website
+
+## Usage
+The default settings should be sensible as-is, so you might be done as soon as you download it. Just open a new note and check if the title changes
+If you'd like to modify something, open obsidian settings and scroll down to community plugins settings
+(INSERT SCREENSHOT HERE)
+
 
 This project uses TypeScript to provide type checking and documentation.
 The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.

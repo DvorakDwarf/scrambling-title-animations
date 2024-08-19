@@ -4,10 +4,10 @@ import { ScramblePluginSettings } from "./settings";
 
 //Get random character
 function get_char(custom_set = ""): string {
-    let lower = "abcdefghijklmnopqrstuvwxyz";
-    let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    let num = "0123456789";
-    let symbols = "?/\\(^)![]{}&^%$#";
+    const lower = "abcdefghijklmnopqrstuvwxyz";
+    const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    const num = "0123456789";
+    const symbols = "?/\\(^)![]{}&^%$#";
 
     let chars = (lower + upper + num + symbols).split("");
     if (custom_set != "") {
@@ -23,7 +23,8 @@ function get_garbled_string(length: number): string {
     let answer = "";
 
     //I want my for i in range :(((
-    for (let _ of "W".repeat(length)) {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    for (const _ of "W".repeat(length)) {
         answer += get_char();
     }
 
@@ -39,7 +40,7 @@ async function pick_finish(
     view: MarkdownView, 
     delta: number
 ) {
-    let available_function = [];
+    const available_function = [];
 
     if (settings.error_finish == true) {
         available_function.push(finish_with_errors);
@@ -49,7 +50,7 @@ async function pick_finish(
         available_function.push(finish);
     }
 
-    let picked_function = available_function[Math.floor(Math.random() * available_function.length)];
+    const picked_function = available_function[Math.floor(Math.random() * available_function.length)];
     await picked_function(titleEl, og_title, view, delta);
 }
 
@@ -61,7 +62,7 @@ async function finish(
 ) {
     console.debug("REGULAR FINISH");
 
-    let current_text = titleEl.textContent?.split("") as string[];
+    const current_text = titleEl.textContent?.split("") as string[];
     
     //Unveil all letters
     for (let frame = 0; frame < og_title.length; frame++) {
@@ -107,7 +108,7 @@ async function finish_with_errors(
 ) {
     console.debug("FINISH WITH ERRORS");
 
-    let current_text = titleEl.textContent?.split("") as string[];
+    const current_text = titleEl.textContent?.split("") as string[];
     
     for (let frame = 0; frame < og_title.length; frame++) {
         if (og_title != view.file?.basename) {
@@ -115,7 +116,7 @@ async function finish_with_errors(
             return;
         }
 
-        let chance =  Math.random();
+        const chance =  Math.random();
         if (chance < 0.2) {
             current_text[frame] = get_char("?/\\()![]{}&%$#");
         } else {
@@ -137,10 +138,10 @@ export async function shuffle(
 ): Promise<void> {    
     console.debug("REGULAR SHUFFLE");
 
-    let titleEl = view.inlineTitleEl;
+    const titleEl = view.inlineTitleEl;
     //How long between each frame in ms
     const delta = 1000 / settings.fps;
-    let n_frames = settings.duration / delta;
+    const n_frames = settings.duration / delta;
 
     //Look into
     //Make sure the title isn't selectable while it's garbled
@@ -168,10 +169,10 @@ export async function shuffle_keysmash(
 ): Promise<void> {    
     console.debug("KEYSMASH SHUFFLE");
 
-    let titleEl = view.inlineTitleEl;
+    const titleEl = view.inlineTitleEl;
     //How long between each frame in ms
     const delta = 1000 / settings.fps;
-    let n_frames = settings.duration / delta;
+    const n_frames = settings.duration / delta;
 
     //Look into
     //Make sure the title isn't selectable while it's garbled
@@ -200,7 +201,7 @@ export async function rolling_shuffle(
 ): Promise<void> {    
     console.debug("ROLLING SHUFFLE");
 
-    let titleEl = view.inlineTitleEl;
+    const titleEl = view.inlineTitleEl;
     let n_frames = og_title.length;
 
     //How big the scrambled area up front is
@@ -222,9 +223,9 @@ export async function rolling_shuffle(
         }
 
         if (frame >= scramble_buffer + 1) {
-            let scrambled = get_garbled_string(Math.min(frame, scramble_buffer, n_frames-frame-1));
-            let fixed = og_title.split("").slice(0, frame - scramble_buffer+1);
-            let output = fixed.concat(scrambled.slice(scramble_buffer - frame, scrambled.length));
+            const scrambled = get_garbled_string(Math.min(frame, scramble_buffer, n_frames-frame-1));
+            const fixed = og_title.split("").slice(0, frame - scramble_buffer+1);
+            const output = fixed.concat(scrambled.slice(scramble_buffer - frame, scrambled.length));
             
             titleEl.setText(output.join(""));
         } else {
@@ -243,10 +244,10 @@ export async function shuffle_with_easing(
 ): Promise<void> {    
     console.debug("SHUFFLE WITH EASING");
 
-    let titleEl = view.inlineTitleEl;
+    const titleEl = view.inlineTitleEl;
     //How long between each frame in ms
     const delta = 1000 / settings.fps;
-    let n_frames = settings.duration / delta;
+    const n_frames = settings.duration / delta;
 
     //Look into
     //Make sure the title isn't selectable while it's garbled
@@ -259,8 +260,8 @@ export async function shuffle_with_easing(
             return;
         }
 
-        let easing_coefficient = easing_function((frame+1)/n_frames)
-        let garble_length = easing_coefficient * og_title.length;
+        const easing_coefficient = easing_function((frame+1)/n_frames)
+        const garble_length = easing_coefficient * og_title.length;
         titleEl.setText(get_garbled_string(garble_length));
 
         await setTimeout(delta);

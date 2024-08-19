@@ -11,7 +11,7 @@ async function pick_shuffle(
     easing_function: CallableFunction
 ): Promise<void> {
 
-    let available_functions = [];
+    const available_functions = [];
 
     if (settings.keyboard_shuffle == true) {
         available_functions.push(shuffle_keysmash);
@@ -31,7 +31,7 @@ async function pick_shuffle(
         available_functions.push(shuffle);
     }
 
-    let picked_function = available_functions[Math.floor(Math.random() * available_functions.length)];
+    const picked_function = available_functions[Math.floor(Math.random() * available_functions.length)];
     await picked_function(view, og_title, settings, easing_function);
 }
 
@@ -48,14 +48,14 @@ export default class ScrambleTextPlugin extends Plugin {
     }
 
     async onload() {
-	    await this.loadSettings();
+        await this.loadSettings();
         this.addSettingTab(new ScrambleSettingTab(this.app, this));
 
         //The plugin activates every time the active window changes
         this.registerEvent(this.app.workspace.on('active-leaf-change', (leaf) => {
             console.debug("BIG LEAF MOMENT (new note, scrambling)");
             
-            let view = leaf.workspace.getActiveViewOfType(MarkdownView);
+            const view = leaf.workspace.getActiveViewOfType(MarkdownView);
             if (view == null) {
                 return;
             }            
@@ -70,7 +70,7 @@ export default class ScrambleTextPlugin extends Plugin {
             const cssclass = this.settings.cssclass;
             const file = this.app.workspace.getActiveFile()
             if (file) {
-                this.app.fileManager.processFrontMatter(file,  (frontmatter: any) => {
+                this.app.fileManager.processFrontMatter(file,  (frontmatter) => {
                     if (frontmatter.cssclasses && frontmatter.cssclasses.includes(cssclass)) {
                         console.debug("cssclass found: " + cssclass);
                         pick_shuffle(view, view.inlineTitleEl.textContent, this.settings, easeOutBack);

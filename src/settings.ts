@@ -1,6 +1,5 @@
-import { text } from "stream/consumers";
 import ExamplePlugin from "./main";
-import { App, PluginSettingTab, Setting, ToggleComponent } from "obsidian";
+import { App, PluginSettingTab, Setting } from "obsidian";
 
 export interface ScramblePluginSettings {
     cssclass: string,
@@ -35,7 +34,7 @@ export class ScrambleSettingTab extends PluginSettingTab {
   }
 
     display(): void {
-        let { containerEl } = this;
+        const { containerEl } = this;
 
         containerEl.empty();
 

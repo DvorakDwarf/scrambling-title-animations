@@ -1,11 +1,11 @@
 {
-	"id": "text-scrambler",
-	"name": "Text Scrambling Animation",
+	"id": "scrambling-title-animations",
+	"name": "Scrambling Title Animations",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Plugin that animates the title of any note you open by scrambling and revealing it in several visually appealing ways",
+	"author": "HistidineDwarf",
+	"authorUrl": "https://github.com/DvorakDwarf",
+	"fundingUrl": "https://buymeacoffee.com/histidinedwarf",
 	"isDesktopOnly": false
 }

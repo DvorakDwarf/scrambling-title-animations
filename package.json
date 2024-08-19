@@ -1,15 +1,15 @@
 {
-	"name": "obsidian-sample-plugin",
+	"name": "scrambling-title-animations",
 	"version": "1.0.0",
-	"description": "This is a sample plugin for Obsidian (https://obsidian.md)",
-	"main": "src/main.js",
+	"description": "Plugin that animates the title of any note you open by scrambling and revealing it in several visually appealing ways",
+	"main": "main.js",
 	"scripts": {
 		"dev": "node esbuild.config.mjs",
 		"build": "tsc -noEmit -skipLibCheck && node esbuild.config.mjs production",
 		"version": "node version-bump.mjs && git add manifest.json versions.json"
 	},
 	"keywords": [],
-	"author": "",
+	"author": "HistidineDwarf",
 	"license": "MIT",
 	"devDependencies": {
 		"@types/node": "^16.11.6",

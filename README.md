@@ -1,8 +1,7 @@
-# Obsidian Sample Plugin
+# Scrambling Title Animations
 This was originally cloned from the Obsidian Sample Plugin repo which is why you see all the other contributors
 
-
-This is a sample plugin for Obsidian (https://obsidian.md).
+Obsidian (https://obsidian.md).
 
 This project uses TypeScript to provide type checking and documentation.
 The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.

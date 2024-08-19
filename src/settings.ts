@@ -70,7 +70,7 @@ export class ScrambleSettingTab extends PluginSettingTab {
 
         new Setting(containerEl)
             .setName("Animation duration (ms)")
-            .setDesc("How long should the scrambling animation be, in miliseconds. The unscrambling time is independent of this")
+            .setDesc("How long the scrambling animation will be, in miliseconds. The unscrambling time is independent of this")
             .addText((text) => {
                 text
                 .setPlaceholder("600")
@@ -98,7 +98,7 @@ export class ScrambleSettingTab extends PluginSettingTab {
             })
 
         containerEl.createEl("h1", { text: "Scrambling Variants" });
-        containerEl.createEl("p", { text: "There multiple different scrambling animations. Pick which ones you'd like to see. One of the enabled ones is picked randomly when you open a note to animate the scrambling process. If nothing is picked, the regular options are used" });
+        containerEl.createEl("p", { text: "There are multiple different scrambling animations. Pick which ones you'd like to see. One of the enabled ones is picked randomly when you open a note to animate the scrambling process. If nothing is picked, the regular options are used" });
         new Setting(containerEl)
             .setName('Regular shuffle')
             .setDesc("The entire title is scrambled")
@@ -114,7 +114,7 @@ export class ScrambleSettingTab extends PluginSettingTab {
         );
         new Setting(containerEl)
             .setName('Keyboard smash shuffle')
-            .setDesc("The scrambled title increases by one character every frame. Looks like somebody is smashing their keyboard")
+            .setDesc("The scrambled title increases by one character every frame. Looks like somebody smashing their keyboard")
             .addToggle((toggle) => {
                 toggle
                 .setValue(this.plugin.settings.keyboard_shuffle)
@@ -127,7 +127,7 @@ export class ScrambleSettingTab extends PluginSettingTab {
         );
         new Setting(containerEl)
             .setName('Rolling shuffle')
-            .setDesc("Title is typed out letter by letter, with older characters being unscrambled. Does not play a finishing animation because it finishes the text by itself. Additionally, doesn't change based on fps or duration settings")
+            .setDesc("The title is typed out letter by letter, with older characters being unscrambled. Does not play a finishing animation because it finishes the text by itself. Additionally, doesn't change based on fps or duration settings")
             .addToggle((toggle) => {
                 toggle
                 .setValue(this.plugin.settings.rolling_shuffle)

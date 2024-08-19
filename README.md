@@ -1,7 +1,7 @@
 # Scrambling Title Animations
 This was originally cloned from the Obsidian Sample Plugin repo which is why you see all the other contributors
 
-(Put plugin gif here)
+https://github.com/user-attachments/assets/c1a7ed04-0640-4fc7-ba80-6119a293bd33
 
 This is a plugin for [Obsidian](https://obsidian.md) that animates the title of any note you open by scrambling and revealing it in several visually appealing ways. 
 

@@ -4,7 +4,7 @@ import { rolling_shuffle, shuffle, shuffle_keysmash, shuffle_with_easing } from 
 import { easeOutBack } from './easing';
 
 //Randomly selects which shuffle/scramble animation will be played
-async function pick_shuffle(
+async function pick_shuffle( 
     view: MarkdownView, 
     og_title: string, 
     settings: ScramblePluginSettings,

@@ -38,7 +38,6 @@ export class ScrambleSettingTab extends PluginSettingTab {
 
         containerEl.empty();
 
-        containerEl.createEl("h1", { text: "General" });
         new Setting(containerEl)
             .setName("CSS class name")
             .setDesc("Leave blank for effect to apply to every note. If you only want the effect on certain notes, change this to the name of the tag you will put in the `cssclasses` frontmatter field of target notes")
@@ -96,7 +95,7 @@ export class ScrambleSettingTab extends PluginSettingTab {
                 });
             })
 
-        containerEl.createEl("h1", { text: "Scrambling Variants" });
+        new Setting(containerEl).setName('Scrambling variants').setHeading();
         containerEl.createEl("p", { text: "There are multiple different scrambling animations. Pick which ones you'd like to see. One of the enabled ones is picked randomly when you open a note to animate the scrambling process. If nothing is picked, the regular options are used" });
         new Setting(containerEl)
             .setName('Regular shuffle')
@@ -151,7 +150,8 @@ export class ScrambleSettingTab extends PluginSettingTab {
             }
         );
 
-        containerEl.createEl("h1", { text: "Unscrambling Variants" });
+        // containerEl.createEl("h1", { text: "Unscrambling variants" });
+        new Setting(containerEl).setName('Unscrambling variants').setHeading();
         containerEl.createEl("p", { text: "After some time, there is a separate animation to unveil the scrambled text"});
         new Setting(containerEl)
             .setName('Regular finish')

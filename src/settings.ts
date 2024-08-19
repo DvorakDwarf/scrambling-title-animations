@@ -1,5 +1,30 @@
+import { text } from "stream/consumers";
 import ExamplePlugin from "./main";
 import { App, PluginSettingTab, Setting, ToggleComponent } from "obsidian";
+
+export interface ScramblePluginSettings {
+    cssclass: string,
+    fps: number,
+    duration: number,
+    regular_shuffle: boolean,
+    keyboard_shuffle: boolean,
+    rolling_shuffle: boolean,
+    overshoot_shuffle: boolean,
+    regular_finish: boolean,
+    error_finish: boolean,
+}
+  
+export const DEFAULT_SETTINGS: Partial<ScramblePluginSettings> = {
+    cssclass: "",
+    fps: 30,
+    duration: 600,
+    regular_shuffle: true,
+    keyboard_shuffle: true,
+    rolling_shuffle: true,
+    overshoot_shuffle: true,
+    regular_finish: true,
+    error_finish: true
+};
 
 export class ScrambleSettingTab extends PluginSettingTab {
   plugin: ExamplePlugin;
@@ -20,7 +45,6 @@ export class ScrambleSettingTab extends PluginSettingTab {
             .setDesc("Leave blank for effect to apply to every note. If you only want the effect on certain notes, change this to the name of the tag you will put in the `cssclasses` frontmatter field of target notes")
             .addText((text) =>
                 text
-                //   .setPlaceholder("MMMM dd, yyyy")
                 .setValue(this.plugin.settings.cssclass)
                 .onChange(async (value) => {
                     this.plugin.settings.cssclass = value;
@@ -31,31 +55,50 @@ export class ScrambleSettingTab extends PluginSettingTab {
         new Setting(containerEl)
             .setName("FPS")
             .setDesc("Frames per second of the animation")
-            .addText((text) =>
-            text
-            //   .setPlaceholder("MMMM dd, yyyy")
+            .addText((text) => {
+                text
+                .setPlaceholder("30")
                 .setValue(String(this.plugin.settings.fps))
                 .onChange(async (value) => {
-                this.plugin.settings.fps = Number(value);
-                await this.plugin.saveSettings();
-            })
-        );
+                    this.plugin.settings.fps = Number(value);
+                    await this.plugin.saveSettings();
+                })
+                text.inputEl.type = "number";
+                text.inputEl.min = "1";
+                text.inputEl.max = "120";
+            });
 
         new Setting(containerEl)
-            .setName("Animation Duration (ms)")
+            .setName("Animation duration (ms)")
             .setDesc("How long should the scrambling animation be, in miliseconds. The unscrambling time is independent of this")
-            .addText((text) =>
+            .addText((text) => {
                 text
-                //   .setPlaceholder("MMMM dd, yyyy")
-                .setValue(String(this.plugin.settings.length))
+                .setPlaceholder("600")
+                .setValue(String(this.plugin.settings.duration))
                 .onChange(async (value) => {
-                    this.plugin.settings.length = Number(value);
+                    this.plugin.settings.duration = Number(value);
                     await this.plugin.saveSettings();
+                });
+                text.inputEl.type = "number";
+                //I don't think this does anything, but for future reference
+                text.inputEl.min = "200";
+                text.inputEl.max = "9999";
+            });
+
+        new Setting(containerEl)
+            .setName("Reset settings")
+            .setDesc("Change all the settings back to default")
+            .addButton((button) => {
+                button.setButtonText("Reset");
+                button.onClick(async () => {
+                    this.plugin.settings = Object.assign({}, this.plugin.settings, DEFAULT_SETTINGS);
+                    await this.plugin.saveSettings();
+                    this.display();
+                });
             })
-        );
 
         containerEl.createEl("h1", { text: "Scrambling Variants" });
-        containerEl.createEl("p", { text: "There multiple different scrambling animations. Pick which ones you'd like to see. One of the enabled ones is picked randomly when you open a note to animate the scrambling process. If nothing is picked, the regular options are enabled" });
+        containerEl.createEl("p", { text: "There multiple different scrambling animations. Pick which ones you'd like to see. One of the enabled ones is picked randomly when you open a note to animate the scrambling process. If nothing is picked, the regular options are used" });
         new Setting(containerEl)
             .setName('Regular shuffle')
             .setDesc("The entire title is scrambled")
@@ -84,7 +127,7 @@ export class ScrambleSettingTab extends PluginSettingTab {
         );
         new Setting(containerEl)
             .setName('Rolling shuffle')
-            .setDesc("Title is typed out letter by letter, with older characters being unscrambled. Does not play a finishing animation because it finishes the text by itself")
+            .setDesc("Title is typed out letter by letter, with older characters being unscrambled. Does not play a finishing animation because it finishes the text by itself. Additionally, doesn't change based on fps or duration settings")
             .addToggle((toggle) => {
                 toggle
                 .setValue(this.plugin.settings.rolling_shuffle)
@@ -110,7 +153,7 @@ export class ScrambleSettingTab extends PluginSettingTab {
         );
 
         containerEl.createEl("h1", { text: "Unscrambling Variants" });
-        containerEl.createEl("p", { text: "After some time, there is a separate animation to unveil the scrambled text" });
+        containerEl.createEl("p", { text: "After some time, there is a separate animation to unveil the scrambled text"});
         new Setting(containerEl)
             .setName('Regular finish')
             .setDesc("The title is unveilded letter by letter")

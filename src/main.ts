@@ -1,33 +1,9 @@
-import { App, FileManager, MarkdownView, Plugin, TFile } from 'obsidian';
-import { ScrambleSettingTab } from "./settings";
+import { MarkdownView, Plugin } from 'obsidian';
+import { DEFAULT_SETTINGS, ScramblePluginSettings, ScrambleSettingTab } from "./settings";
 import { rolling_shuffle, shuffle, shuffle_keysmash, shuffle_with_easing } from './shuffling';
 import { easeOutBack } from './easing';
 
-export interface ScramblePluginSettings {
-    cssclass: string,
-    fps: number,
-    length: number,
-    regular_shuffle: boolean,
-    keyboard_shuffle: boolean,
-    rolling_shuffle: boolean,
-    overshoot_shuffle: boolean,
-    regular_finish: boolean,
-    error_finish: boolean,
-
-}
-  
-const DEFAULT_SETTINGS: Partial<ScramblePluginSettings> = {
-    cssclass: "",
-    fps: 30,
-    length: 2000,
-    regular_shuffle: true,
-    keyboard_shuffle: true,
-    rolling_shuffle: true,
-    overshoot_shuffle: true,
-    regular_finish: true,
-    error_finish: true
-};
-
+//Randomly selects which shuffle/scramble animation will be played
 async function pick_shuffle(
     view: MarkdownView, 
     og_title: string, 
@@ -35,28 +11,31 @@ async function pick_shuffle(
     easing_function: CallableFunction
 ): Promise<void> {
 
-    let available_function = [];
+    let available_functions = [];
 
     if (settings.keyboard_shuffle == true) {
-        available_function.push(shuffle_keysmash);
+        available_functions.push(shuffle_keysmash);
     }
 
     if (settings.rolling_shuffle == true) {
-        available_function.push(rolling_shuffle);
+        if (og_title.length > 7) {
+            available_functions.push(rolling_shuffle);
+        }
     }
 
     if (settings.overshoot_shuffle == true) {
-        available_function.push(shuffle_with_easing);
+        available_functions.push(shuffle_with_easing);
     }
 
-    if (settings.regular_shuffle == true || available_function.length == 0) {
-        available_function.push(shuffle);
+    if (settings.regular_shuffle == true || available_functions.length == 0) {
+        available_functions.push(shuffle);
     }
 
-    let picked_function = available_function[Math.floor(Math.random() * available_function.length)];
+    let picked_function = available_functions[Math.floor(Math.random() * available_functions.length)];
     await picked_function(view, og_title, settings, easing_function);
 }
 
+//The main plugin
 export default class ScrambleTextPlugin extends Plugin {
 	settings: ScramblePluginSettings;
     
@@ -72,28 +51,28 @@ export default class ScrambleTextPlugin extends Plugin {
 	    await this.loadSettings();
         this.addSettingTab(new ScrambleSettingTab(this.app, this));
 
-        console.log("Scrambler started");
-
+        //The plugin activates every time the active window changes
         this.registerEvent(this.app.workspace.on('active-leaf-change', (leaf) => {
-            console.log("BIG LEAF MOMENT (Start of event)");
+            console.debug("BIG LEAF MOMENT (new note, scrambling)");
             
             let view = leaf.workspace.getActiveViewOfType(MarkdownView);
             if (view == null) {
                 return;
             }            
-            // console.log(view);
 
+            //If the user didn't set a cssclass in settings. always work
             if (this.settings.cssclass == "") { 
                 pick_shuffle(view, view.inlineTitleEl.textContent, this.settings, easeOutBack);
                 return;
             }
 
+            //If cssclass is set, respect that
             const cssclass = this.settings.cssclass;
             const file = this.app.workspace.getActiveFile()
             if (file) {
                 this.app.fileManager.processFrontMatter(file,  (frontmatter: any) => {
                     if (frontmatter.cssclasses && frontmatter.cssclasses.includes(cssclass)) {
-                        console.log("Found " + cssclass);
+                        console.debug("cssclass found: " + cssclass);
                         pick_shuffle(view, view.inlineTitleEl.textContent, this.settings, easeOutBack);
                         return;
                     }
@@ -103,6 +82,6 @@ export default class ScrambleTextPlugin extends Plugin {
 	}
 
 	onunload() { 
-		console.log("Scrambler ended");
-	}
+	
+    }
 }

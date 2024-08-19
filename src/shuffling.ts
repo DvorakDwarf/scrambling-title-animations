@@ -1,12 +1,13 @@
 import { MarkdownView } from "obsidian";
-import { ScramblePluginSettings } from "./main";
 import { setTimeout } from "timers/promises";
+import { ScramblePluginSettings } from "./settings";
 
+//Get random character
 function get_char(custom_set = ""): string {
     let lower = "abcdefghijklmnopqrstuvwxyz";
     let upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
     let num = "0123456789";
-    let symbols = ",.?/\\(^)![]{}*&^%$#\'";
+    let symbols = "?/\\(^)![]{}&^%$#";
 
     let chars = (lower + upper + num + symbols).split("");
     if (custom_set != "") {
@@ -17,6 +18,7 @@ function get_char(custom_set = ""): string {
     return randomElement;
 }
 
+//Get an entire random string of length
 function get_garbled_string(length: number): string {
     let answer = "";
 
@@ -28,6 +30,8 @@ function get_garbled_string(length: number): string {
     return answer
 }
 
+//Randomly pick the unveiling animation
+//NOT called by rolling shuffle
 async function pick_finish(
     settings: ScramblePluginSettings,
     titleEl: HTMLElement, 
@@ -48,23 +52,23 @@ async function pick_finish(
     let picked_function = available_function[Math.floor(Math.random() * available_function.length)];
     await picked_function(titleEl, og_title, view, delta);
 }
+
 async function finish(
     titleEl: HTMLElement, 
     og_title: string, 
     view: MarkdownView, 
     delta: number
 ) {
-    console.log("REGULAR FINISH");
+    console.debug("REGULAR FINISH");
 
     let current_text = titleEl.textContent?.split("") as string[];
     
+    //Unveil all letters
     for (let frame = 0; frame < og_title.length; frame++) {
         if (og_title != view.file?.basename) {
-            console.log("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
+            console.debug("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
             return;
         }
-
-        console.log("Finish frame " + frame + " Setting new char to: " + og_title.split("")[frame]);
 
         current_text[frame] = og_title.split("")[frame];
         titleEl.setText(current_text.join(""));
@@ -72,10 +76,11 @@ async function finish(
         await setTimeout(delta);
     }
 
+    //Delete any extra letters
     if (current_text.length > og_title.length) {
         for (let frame = og_title.length; frame < current_text.length; frame++) {
             if (og_title != view.file?.basename) {
-                console.log("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
+                console.debug("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
                 return;
             }
 
@@ -86,29 +91,29 @@ async function finish(
         }
     }
     
+    //Just in case, set text to original title fully
     titleEl.setText(og_title);
 
     //Make sure to make text selectable afterwards
     titleEl.style.pointerEvents = "auto";
 }
 
+//This also calls regular finish for second pass
 async function finish_with_errors(
     titleEl: HTMLElement, 
     og_title: string, 
     view: MarkdownView, 
     delta: number
 ) {
-    console.log("FINISH WITH ERRORS");
+    console.debug("FINISH WITH ERRORS");
 
     let current_text = titleEl.textContent?.split("") as string[];
     
     for (let frame = 0; frame < og_title.length; frame++) {
         if (og_title != view.file?.basename) {
-            console.log("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
+            console.debug("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
             return;
         }
-
-        console.log("Finish frame " + frame + " Setting new char to: " + og_title.split("")[frame]);
 
         let chance =  Math.random();
         if (chance < 0.2) {
@@ -130,24 +135,23 @@ export async function shuffle(
     og_title: string, 
     settings: ScramblePluginSettings
 ): Promise<void> {    
-    console.log("REGULAR SHUFFLE");
+    console.debug("REGULAR SHUFFLE");
 
     let titleEl = view.inlineTitleEl;
     //How long between each frame in ms
     const delta = 1000 / settings.fps;
-    let n_frames = settings.length / delta;
+    let n_frames = settings.duration / delta;
 
     //Look into
+    //Make sure the title isn't selectable while it's garbled
     titleEl.style.pointerEvents = "none";
 
     //I want my for i in range :(((
     for (let frame = 0; frame < n_frames; frame++) {
         if (og_title != view.file?.basename) {
-            console.log("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
+            console.debug("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
             return;
         }
-
-        console.log("Frame " + frame);
 
         titleEl.setText(get_garbled_string(og_title.length));
 
@@ -157,26 +161,26 @@ export async function shuffle(
     pick_finish(settings, titleEl, og_title, view, delta);
 }
 
-//Doesn't work if n_frames lower than og_title.length
 export async function shuffle_keysmash(
     view: MarkdownView, 
     og_title: string, 
     settings: ScramblePluginSettings
 ): Promise<void> {    
-    console.log("KEYSMASH SHUFFLE");
+    console.debug("KEYSMASH SHUFFLE");
 
     let titleEl = view.inlineTitleEl;
     //How long between each frame in ms
     const delta = 1000 / settings.fps;
-    let n_frames = settings.length / delta;
+    let n_frames = settings.duration / delta;
 
     //Look into
+    //Make sure the title isn't selectable while it's garbled
     titleEl.style.pointerEvents = "none";
 
     //I want my for i in range :(((
     for (let frame = 0; frame < n_frames; frame++) {
         if (og_title != view.file?.basename) {
-            console.log("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
+            console.debug("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
             return;
         }
 
@@ -188,31 +192,32 @@ export async function shuffle_keysmash(
     pick_finish(settings, titleEl, og_title, view, delta);
 }
 
-//TODO:
-//Doesn't work if n_frames lower than og_title.length
+//Doesn't care about fps or duration
 export async function rolling_shuffle(
     view: MarkdownView, 
     og_title: string, 
     settings: ScramblePluginSettings
 ): Promise<void> {    
-    console.log("ROLLING SHUFFLE");
+    console.debug("ROLLING SHUFFLE");
 
     let titleEl = view.inlineTitleEl;
-    //How long between each frame in ms
     let n_frames = og_title.length;
 
+    //How big the scrambled area up front is
     const scramble_buffer = 7;
     n_frames += scramble_buffer;
 
-    const delta = settings.length / n_frames;
+    //How long between each frame in ms
+    const delta = 1000 / n_frames;
 
     //Look into
+    //Make sure the title isn't selectable while it's garbled
     titleEl.style.pointerEvents = "none";
 
     //I want my for i in range :(((
     for (let frame = 0; frame < n_frames; frame++) {
         if (og_title != view.file?.basename) {
-            console.log("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
+            console.debug("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
             return;
         }
 
@@ -230,36 +235,32 @@ export async function rolling_shuffle(
     }
 }
 
-//TODO:
-//Doesn't work if n_frames lower than og_title.length
 export async function shuffle_with_easing(
     view: MarkdownView, 
     og_title: string, 
     settings: ScramblePluginSettings,
     easing_function: CallableFunction
 ): Promise<void> {    
-    console.log("SHUFFLE WITH EASING");
+    console.debug("SHUFFLE WITH EASING");
 
     let titleEl = view.inlineTitleEl;
     //How long between each frame in ms
     const delta = 1000 / settings.fps;
-    let n_frames = settings.length / delta;
+    let n_frames = settings.duration / delta;
 
     //Look into
+    //Make sure the title isn't selectable while it's garbled
     titleEl.style.pointerEvents = "none";
 
     //I want my for i in range :(((
     for (let frame = 0; frame < n_frames; frame++) {
         if (og_title != view.file?.basename) {
-            console.log("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
+            console.debug("THIS AIN'T THE SAME FILE ANYMORE, ABORT");
             return;
         }
 
-        console.log("Frame " + frame);
-
         let easing_coefficient = easing_function((frame+1)/n_frames)
         let garble_length = easing_coefficient * og_title.length;
-        console.log(easing_coefficient);
         titleEl.setText(get_garbled_string(garble_length));
 
         await setTimeout(delta);

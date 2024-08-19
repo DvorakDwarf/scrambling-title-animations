@@ -9,6 +9,6 @@ I noticed this effect in a couple of places and I personally find it wonderful. 
 2nd season wasn't so bad
 
 ## Usage
-The default settings should be sensible as-is, so you might be done as soon as you download and enable it. Just open a new note and check if the title changes
+The default settings should be sensible as-is, so you might be done as soon as you download and enable it. Just open a new note and check if the title changes \
 If you'd like to modify something, open obsidian settings and scroll down to community plugins settings
 ![2024-08-18_19-56](https://github.com/user-attachments/assets/42624235-708b-4953-833d-50149a0003bc)

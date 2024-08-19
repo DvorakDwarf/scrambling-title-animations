@@ -3,7 +3,8 @@ This was originally cloned from the Obsidian Sample Plugin repo which is why you
 
 (Put plugin gif here)
 
-This is a plugin for [Obsidian](https://obsidian.md) that animates the title of any new note you open by scrambling it in several visually appealing ways. \
+This is a plugin for [Obsidian](https://obsidian.md) that animates the title of any new note you open by scrambling it in several visually appealing ways. 
+
 I noticed this effect in a couple of places and I personally find it wonderful. Last push was when I recently finished watching Aldnoah.Zero and then visited their website https://www.aldnoahzerousa.com/. IT'S SO PRETTY, I LOVE THE LOGIN SCREEN AND THE SCRAMBLING EFFECT ON THE TEXT, MWAH, CHEF'S KISS. I was thinking of eventually putting the effect somewhere on my personal website
 
 ## Usage

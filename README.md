@@ -1,4 +1,6 @@
 # Obsidian Sample Plugin
+This was originally cloned from the Obsidian Sample Plugin repo which is why you see all the other contributors
+
 
 This is a sample plugin for Obsidian (https://obsidian.md).
 

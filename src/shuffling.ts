@@ -96,11 +96,7 @@ async function finish(
     titleEl.setText(og_title);
 
     //Make sure to make text selectable afterwards
-    // HELLO PLUGIN REVIEWER ! I think this is an exception to the "no hardcoded styles"
-    // rule. Using this doesn't make the title look any different, it only prevents it from
-    // being selected and accidentally changing the title of your note
-    titleEl.style.pointerEvents = "auto";
-}
+    titleEl.classList.remove("compliance-class");}
 
 //This also calls regular finish for second pass
 async function finish_with_errors(
@@ -146,9 +142,8 @@ export async function shuffle(
     const delta = 1000 / settings.fps;
     const n_frames = settings.duration / delta;
 
-    //Look into
     //Make sure the title isn't selectable while it's garbled
-    titleEl.style.pointerEvents = "none";
+    titleEl.classList.add("compliance-class");
 
     //I want my for i in range :(((
     for (let frame = 0; frame < n_frames; frame++) {
@@ -177,9 +172,8 @@ export async function shuffle_keysmash(
     const delta = 1000 / settings.fps;
     const n_frames = settings.duration / delta;
 
-    //Look into
     //Make sure the title isn't selectable while it's garbled
-    titleEl.style.pointerEvents = "none";
+    titleEl.classList.add("compliance-class");
 
     //I want my for i in range :(((
     for (let frame = 0; frame < n_frames; frame++) {
@@ -214,9 +208,8 @@ export async function rolling_shuffle(
     //How long between each frame in ms
     const delta = 1000 / n_frames;
 
-    //Look into
     //Make sure the title isn't selectable while it's garbled
-    titleEl.style.pointerEvents = "none";
+    titleEl.classList.add("compliance-class");
 
     //I want my for i in range :(((
     for (let frame = 0; frame < n_frames; frame++) {
@@ -252,9 +245,8 @@ export async function shuffle_with_easing(
     const delta = 1000 / settings.fps;
     const n_frames = settings.duration / delta;
 
-    //Look into
     //Make sure the title isn't selectable while it's garbled
-    titleEl.style.pointerEvents = "none";
+    titleEl.classList.add("compliance-class");
 
     //I want my for i in range :(((
     for (let frame = 0; frame < n_frames; frame++) {
